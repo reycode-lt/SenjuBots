@@ -1,78 +1,10 @@
-import fs from "node:fs"
-import path from "node:path"
-import { fileURLToPath } from "node:url"
-
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = path.dirname(__filename)
-
-export default {
-  name: "Menu Utama",
-  command: ["menu", "help", "start"],
-  help: ["menu"],
-  tags: ["main"],
-  category: "Main",
-
-  async run(
-    sock,
-    m,
-    {
-      prefix,
-      pushName,
-      isOwner
-    }
-  ) {
-    try {
-      await m.react("🔥")
-
-      const modeStatus = sock.public ? "Public 🌐" : "Self 🔒"
-      const userName = pushName || "Pengguna"
-
-      let menuText = `╭━━━〔 *REYCODEDGTL PANEL* 〕━━━╮\n`
-      menuText += `┃ Halo, *${userName}*! 👋\n`
-      menuText += `┣━━━━━━━━━━━━━━━━━━━━━━━━━━━┫\n`
-      menuText += `┃ • *Mode:* ${modeStatus}\n`
-      menuText += `┃ • *Prefix:* [ ${prefix || "Multi"} ]\n`
-      menuText += `┣━━━━━━━━━━━━━━━━━━━━━━━━━━━┫\n`
-      menuText += `┃      📋 *LIST COMMAND*    📦\n`
-      menuText += `┣━━━━━━━━━━━━━━━━━━━━━━━━━━━┫\n`
-      
-      menuText += `┃ *[ UTAMA ]*\n`
-      menuText += `┃ • ${prefix}menu\n`
-      menuText += `┃ • ${prefix}ping\n`
-      menuText += `┃\n`
-      
-      menuText += `┃ *[ OWNER / STATUS GRUP ]*\n`
-      menuText += `┃ • ${prefix}swgc\n`
-      menuText += `┃ • ${prefix}swgb\n`
-      menuText += `┃ • ${prefix}swgcall\n`
-      menuText += `┃ • ${prefix}autoswgc\n`
-      
-      menuText += `╰───────────────────────────╯\n\n`
-      menuText += `_⚡ Powered by ReyCodeDGTL & Sanjubots_`
-
-      // Path menuju file image/menu.png sejajar dengan folder plugins/
-      const imagePath = path.join(__dirname, "../image/menu.png")
-
-      if (fs.existsSync(imagePath)) {
-        await sock.sendMessage(
-          m.chat,
-          {
-            image: fs.readFileSync(imagePath),
-            caption: menuText
-          },
-          { quoted: m }
-        )
-      } else {
-        await m.reply(menuText)
-      }
-
-    } catch (err) {
-      console.error("[MENU ERROR]", err)
-      await m.reply(`❌ Gagal memuat menu: ${err.message}`)
-    }
-  }
-}
-
+import { makeWASocket, useMultiFileAuthState, DisconnectReason, fetchLatestBaileysVersion } from 'baileys';
+import readline from 'readline';
+import pino from 'pino';
+import chalk from 'chalk';
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
 import handler from './handler.js';
 import { startAutoSwgc } from './helper.js';
